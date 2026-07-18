@@ -31,6 +31,12 @@
   gsap.registerPlugin(ScrollTrigger);
   document.documentElement.classList.add('js-ready');
 
+  // Mobile Safari/Chrome resize the viewport when the address bar shows/hides
+  // on scroll; without this, ScrollTrigger treats that as a real resize and
+  // recalculates/replays triggers mid-scroll. Real orientation changes still
+  // trigger a refresh as normal.
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) {
     gsap.set('.gsap-reveal', { opacity: 1, y: 0 });
@@ -70,6 +76,13 @@
       scrollTrigger: { trigger: group, start: 'top 85%', toggleActions: 'play none none reverse' }
     });
   });
+
+  // Barlow/Barlow Condensed swap in after first paint and change text height,
+  // which shifts every trigger's position below the fold. Re-measure once
+  // fonts are actually ready so 'top 85%' lines up with the real layout.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => ScrollTrigger.refresh());
+  }
 })();
 
 // ----------------------------------------------------------------------------

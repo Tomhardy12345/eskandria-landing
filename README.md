@@ -37,7 +37,7 @@ system. Each chapter has an `id` and `data-screen-label` for reference:
 
 ## Design tokens (`styles.css` `:root`)
 
-```
+\`\`\`
 --color-bg: #f2f2f3        paper ground
 --color-text: #1d1f20
 --color-accent: #5980a6    steel blue — the one accent
@@ -47,7 +47,7 @@ system. Each chapter has an `id` and `data-screen-label` for reference:
 --font-body: "Barlow" (400/500/600) — body copy
 --leading: 24px             base vertical rhythm unit
 --edge: clamp(20px,5vw,72px) page gutter
-```
+\`\`\`
 
 Fonts load from Google Fonts in `<head>`. Self-host if required.
 
@@ -67,10 +67,10 @@ Fonts load from Google Fonts in `<head>`. Self-host if required.
 
 No i18n library — every piece of copy is duplicated inline:
 
-```html
+\`\`\`html
 <span data-en-only>English copy</span>
 <span data-de-only>Deutsche Kopie</span>
-```
+\`\`\`
 
 `script.js` sets `data-lang="en"|"de"` on `<html>`; CSS
 (`[data-lang="en"] [data-de-only] { display:none }` and the inverse) shows
@@ -98,6 +98,34 @@ before shipping. What's wired up:
 
 Extension notes are commented at the bottom of `script.js` (video hero,
 scroll-reactive nav, pinned chapters).
+
+## Cross-browser & performance hardening
+
+Applied on top of the original handoff, still using only plain CSS/vanilla JS:
+
+- **Mobile viewport bug**: `.chapter` (and the `.chapter-60`/`-70`/`-auto`
+  modifier classes that replaced the old per-section inline `min-height`
+  styles) use `100dvh` with a `100vh` fallback, so chapters don't clip or jump
+  when the mobile Safari/Chrome address bar shows/hides mid-scroll.
+- **`ScrollTrigger.config({ ignoreMobileResize: true })`** in `script.js` stops
+  that same address-bar resize from being treated as a real resize and
+  re-triggering/replaying reveals; genuine orientation changes still refresh
+  normally.
+- **Font-swap layout shift**: `script.js` calls `ScrollTrigger.refresh()` once
+  `document.fonts.ready` resolves, so trigger start positions (`top 85%`)
+  match the page after Barlow/Barlow Condensed finish loading, not before.
+- **`aspect-ratio` fallback**: an `@supports not (aspect-ratio: 1 / 1)` block
+  in `styles.css` keeps `.hero-figure`/`.split-figure`/`.map-figure` open via
+  the padding-bottom trick for older engines (e.g. Safari <15).
+- **Perf**: `preconnect` to `cdnjs.cloudflare.com` + `preload` hints for the
+  two GSAP files, and `defer` on all three `<script>` tags, so script fetch
+  starts without blocking parsing. Add SRI `integrity`/`crossorigin` once
+  you've verified the hashes for the pinned GSAP version (e.g. via
+  srihash.org) — not added here since they couldn't be verified in this pass.
+- Each `.media-placeholder` now has a comment with the recommended
+  `loading`/`decoding`/`fetchpriority` attributes for the eventual `<img>`/
+  `<video>` swap (hero stays eager since it's the LCP element; everything
+  else should lazy-load).
 
 ## Assets needed
 

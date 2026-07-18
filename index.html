@@ -7,8 +7,11 @@
 <meta name="description" content="Eskandria Restaurant — authentic Egyptian street food from Alexandria to Berlin-Tegel.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+<link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js">
 </head>
 <body>
 
@@ -28,7 +31,7 @@
 </nav>
 
 <!-- ================= HERO — Chapter 00 ================= -->
-<header class="hero-field chapter" id="hero" data-screen-label="Hero" style="min-height:100vh">
+<header class="hero-field chapter" id="hero" data-screen-label="Hero">
   <div class="wrap hero">
     <div class="hero-copy">
       <span class="eyebrow gsap-reveal" data-gsap="hero-eyebrow">Alexandria &rarr; Berlin</span>
@@ -53,6 +56,11 @@
     </div>
     <figure class="hero-figure blueprint duotone on-dark" data-gsap-parallax>
       <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <!-- Above-the-fold / LCP element: when swapping in the real asset, keep
+           it eager (no loading="lazy") and add fetchpriority="high" on <img>,
+           or for <video> use muted playsinline autoplay loop preload="auto"
+           with a poster image sized to the 4:5 frame. Serve a compressed
+           MP4/WebM + AVIF/WebP poster. -->
       <div class="media-placeholder">Hero video/photo — Alexandria coastline or the kitchen</div>
     </figure>
   </div>
@@ -76,6 +84,9 @@
     </div>
     <figure class="split-figure blueprint duotone gsap-reveal" data-gsap="chapter">
       <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <!-- Below-the-fold: use <img loading="lazy" decoding="async" width height
+           (matching the 4:3 frame) srcset for responsive sizes, AVIF/WebP with
+           a JPEG fallback. -->
       <div class="media-placeholder">Restaurant interior or founder photo</div>
     </figure>
   </section>
@@ -117,11 +128,11 @@
   </section>
 
   <!-- ================= INTERLUDE — Quote ================= -->
-  <section class="quote-sec section-pad chapter" data-screen-label="Interlude — Quote" style="min-height:60vh">
+  <section class="quote-sec section-pad chapter chapter-60" data-screen-label="Interlude — Quote">
     <figure class="gsap-reveal" data-gsap="chapter">
       <blockquote>
-        <span data-en-only>“From Alexandria to Germany: a true Egyptian experience.”</span>
-        <span data-de-only>„Von Alexandria nach Deutschland: ein echtes ägyptisches Erlebnis.“</span>
+        <span data-en-only>"From Alexandria to Germany: a true Egyptian experience."</span>
+        <span data-de-only>„Von Alexandria nach Deutschland: ein echtes ägyptisches Erlebnis."</span>
       </blockquote>
       <figcaption>— Eskandria</figcaption>
     </figure>
@@ -196,7 +207,7 @@
   </section>
 
   <!-- ================= CHAPTER 04 — More Than a Restaurant ================= -->
-  <section class="split reverse section-pad chapter" id="more-than-a-restaurant" data-screen-label="Chapter 04 — More Than a Restaurant" style="min-height:auto;padding-bottom:0">
+  <section class="split reverse section-pad chapter chapter-auto" id="more-than-a-restaurant" data-screen-label="Chapter 04 — More Than a Restaurant" style="padding-bottom:0">
     <div class="split-copy gsap-reveal" data-gsap="chapter">
       <span class="kicker">04 · <span data-en-only>More Than a Restaurant</span><span data-de-only>Mehr als ein Restaurant</span></span>
       <hr class="caption-rule">
@@ -207,11 +218,14 @@
     </div>
     <figure class="split-figure blueprint duotone gsap-reveal" data-gsap="chapter">
       <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <!-- Below-the-fold: use <img loading="lazy" decoding="async" width height
+           (matching the 4:3 frame) srcset for responsive sizes, AVIF/WebP with
+           a JPEG fallback. -->
       <div class="media-placeholder">Group dinner / celebration photo</div>
     </figure>
   </section>
 
-  <section class="section-pad chapter" style="padding-top:0;min-height:auto" data-screen-label="Chapter 04 — Extras">
+  <section class="section-pad chapter chapter-auto" style="padding-top:0" data-screen-label="Chapter 04 — Extras">
     <div class="cells two" data-gsap-stagger>
       <div class="cell-frame gsap-reveal">
         <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
@@ -276,13 +290,17 @@
       </div>
       <figure class="map-figure blueprint duotone">
         <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <!-- Below-the-fold: prefer a static map export (<img loading="lazy"
+             decoding="async" width height, matching the 4:3 frame>) over a
+             live iframe embed — far lighter and no third-party cookies/JS
+             until the visitor opts in. -->
         <div class="media-placeholder">Map — Medebacher Weg 24, 13507 Berlin</div>
       </figure>
     </div>
   </section>
 
   <!-- ================= CHAPTER 06 — Reservations ================= -->
-  <section class="close-sec chapter" id="reserve" data-screen-label="Chapter 06 — Reservations" style="min-height:70vh">
+  <section class="close-sec chapter chapter-70" id="reserve" data-screen-label="Chapter 06 — Reservations">
     <span class="kicker gsap-reveal" data-gsap="chapter">06 · <span data-en-only>Reservations</span><span data-de-only>Reservierung</span></span>
     <hr class="caption-rule">
     <h3 class="gsap-reveal" data-gsap="chapter">
@@ -309,9 +327,12 @@
   </footer>
 </main>
 
-<!-- GSAP + ScrollTrigger (CDN — pin exact versions in production) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="script.js"></script>
+<!-- GSAP + ScrollTrigger (CDN — pin exact versions in production; add
+     Subresource Integrity `integrity`/`crossorigin` attributes once you can
+     verify the hashes for the pinned version against cdnjs, e.g. via
+     https://www.srihash.org or the cdnjs API) -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="script.js"></script>
 </body>
 </html>
